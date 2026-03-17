@@ -601,24 +601,23 @@ function parseBodyItems(bodyPart, options) {
  */
 function stringifyStandardRule(rule, options) {
 	const selectorLayout = resolveSelectorLayout(rule, options.selectorListStyle);
-	const isDeclarationOnly = rule.bodyItems.every((item) => item.kind === 'declaration');
 	const hasBodyComments = rule.bodyItems.some((item) => item.comments.length > 0);
+	const selectorLine = rule.selectors
+		.map((s) => s.trailingComment ? `${s.text} ${s.trailingComment}` : s.text)
+		.join(', ');
+	const bodyLine = rule.bodyItems
+		.map((item) => {
+			if (item.kind === 'declaration') {
+				return `${item.property}: ${item.value};`;
+			}
+			if (item.kind === 'standard') {
+				return stringifyStandardRule(item.rule, options);
+			}
+			return stringifyAtRule(item.rule, options);
+		})
+		.join(' ');
 
-	if (rule.oneLineRule && isDeclarationOnly && !hasBodyComments) {
-		const selectorLine = rule.selectors
-			.map((s) => s.trailingComment ? `${s.text} ${s.trailingComment}` : s.text)
-			.join(', ');
-		const bodyLine = rule.bodyItems
-			.map((item) => {
-				if (item.kind === 'declaration') {
-					return `${item.property}: ${item.value};`;
-				}
-				if (item.kind === 'standard') {
-					return stringifyStandardRule(item.rule, options);
-				}
-				return stringifyAtRule(item.rule, options);
-			})
-			.join(' ');
+	if (rule.oneLineRule && !hasBodyComments && !/\r?\n/.test(bodyLine)) {
 		return `${rule.ruleIndent}${selectorLine} { ${bodyLine} }`;
 	}
 	const hasLeadingSelectorComments = rule.selectors.some((s) => s.leadingComments.length > 0);
