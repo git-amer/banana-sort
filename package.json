@@ -1,33 +1,99 @@
 {
-  "name": "banana-sort",
-  "displayName": "banana sort",
-  "description": "sort lines of many types simply: general, natural number, css, json.",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.110.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [],
-  "main": "./extension.js",
-  "contributes": {
-    "commands": [{
-      "command": "banana-sort.helloWorld",
-      "title": "Hello World"
-    }]
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "pretest": "npm run lint",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.110.0",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "22.x",
-    "eslint": "^9.39.3",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2"
-  }
+	"name": "banana-sort",
+	"displayName": "banana sort",
+	"description": "sort lines of many types simply: general, natural number, css, json.",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.110.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:banana-sort.sortCss"
+	],
+	"main": "./extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "banana-sort.sortCss",
+				"title": "banana sort"
+			}
+		],
+		"configuration": {
+			"title": "banana sort",
+			"properties": {
+				"banana-sort.css.padAttributes": {
+					"type": "boolean",
+					"default": false,
+					"description": "Pad attribute selectors like [ attr = \"value\" ] instead of [attr=\"value\"]."
+				},
+				"banana-sort.css.padCombinators": {
+					"type": "boolean",
+					"default": false,
+					"description": "Pad explicit combinators (> + ~ & ||) with one space on both sides."
+				},
+				"banana-sort.css.ruleSortOrder": {
+					"type": "array",
+					"default": [
+						":root",
+						"selector",
+						"::pseudo",
+						"@at-rule"
+					],
+					"items": {
+						"type": "string",
+						"enum": [
+							":root",
+							"selector",
+							"::pseudo",
+							"@at-rule"
+						]
+					},
+					"minItems": 4,
+					"maxItems": 4,
+					"uniqueItems": true,
+					"description": "CSS rule category order. Must include each of (:root, selector, ::pseudo, @at-rule) exactly once."
+				},
+				"banana-sort.css.selectorListStyle": {
+					"type": "string",
+					"default": "as-is",
+					"enum": [
+						"one-line",
+						"one-per-line",
+						"as-is"
+					],
+					"description": "Top-level selector formatting for multi-selector rules."
+				},
+				"banana-sort.css.selectorListStyleEmbedded": {
+					"type": "string",
+					"default": "as-is",
+					"enum": [
+						"one-line",
+						"one-per-line",
+						"as-is"
+					],
+					"description": "Formatting for embedded selector lists in pseudo functions like :not(...)."
+				},
+				"banana-sort.css.selectorSpecificity": {
+					"type": "boolean",
+					"default": true,
+					"description": "When sorting selectors, ignore id/class specificity first and use # then . as tie-breakers."
+				}
+			}
+		}
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"pretest": "npm run lint",
+		"test": "vscode-test"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.110.0",
+		"@types/mocha": "^10.0.10",
+		"@types/node": "22.x",
+		"eslint": "^9.39.3",
+		"@vscode/test-cli": "^0.0.12",
+		"@vscode/test-electron": "^2.5.2"
+	}
 }

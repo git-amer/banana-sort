@@ -1,0 +1,4 @@
+.vscode*
+node-modules/
+test/
+vsc-extension-quickstart.md
